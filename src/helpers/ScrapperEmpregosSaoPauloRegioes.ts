@@ -10,8 +10,10 @@ interface IPost {
 }
 
 export class ScrapperEmpregosSaoPauloRegioes extends ScrapperHelper {
+  private static _name = 'ScrapperEmpregosSaoPauloRegioes';
+
   public static init = async () => {
-    console.log('Initializing ScrapperEmpregosSaoPauloRegioes');
+    console.log(`🤖 Initializing ${ScrapperEmpregosSaoPauloRegioes._name} 🤖`);
 
     const html = await ScrapperHelper.crawlHtml(
       'http://empregossaopauloeregioes.blogspot.com/'
@@ -21,11 +23,10 @@ export class ScrapperEmpregosSaoPauloRegioes extends ScrapperHelper {
 
     const posts = $('.post');
 
-    const postsData: IPost[] = [];
+    let postsData: IPost[] = [];
+
     posts.each((i, el) => {
       const postTitle = $(el).find('.post-title');
-
-      console.log(postTitle.text());
 
       const post: IPost = {
         title: postTitle.text(),
@@ -33,6 +34,10 @@ export class ScrapperEmpregosSaoPauloRegioes extends ScrapperHelper {
         description: 'some description',
         email: 'email@email.com'
       };
+
+      postsData = [...postsData, post];
     });
+
+    console.log(postsData);
   };
 }

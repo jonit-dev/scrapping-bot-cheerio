@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { ScrapperEmpregosSaoPauloRegioes } from './helpers/ScrapperEmpregosSaoPauloRegioes'
+import { ScrapperHelper } from './helpers/ScrapperHelper'
 
 const app = express();
 const port = 3000;
@@ -16,7 +16,11 @@ const initCrawlers = async () => {
   //   flags = [...flags, { [item]: href }];
   // });
   // console.log(flags);
-  await ScrapperEmpregosSaoPauloRegioes.init();
+  const proxyList = await ScrapperHelper.fetchProxylist();
+
+  const chosenProxy = ScrapperHelper.rotateProxy(proxyList);
+  console.log(chosenProxy);
+  // await ScrapperEmpregosSaoPauloRegioes.init();
 };
 initCrawlers();
 

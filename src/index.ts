@@ -8,16 +8,7 @@ const port = 3000;
 // Scrapper ========================================
 
 const initCrawlers = async () => {
-  // const html = await ScrapeHelper.crawlHtml('../index.html');
-  // let flags: Object[] = [];
-  // $('#Languages a').each((i, element) => {
-  //   const item = $(element).text();
-  //   const href = $(element).attr('href');
-  //   flags = [...flags, { [item]: href }];
-  // });
-  // console.log(flags);
   const proxyList = await ScrapperHelper.fetchProxylist();
-
   const chosenProxy = ScrapperHelper.rotateProxy(proxyList);
   console.log(chosenProxy);
   // await ScrapperEmpregosSaoPauloRegioes.init();

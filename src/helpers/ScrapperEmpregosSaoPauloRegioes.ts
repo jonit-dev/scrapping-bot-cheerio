@@ -1,6 +1,6 @@
 import cheerio from 'cheerio'
 
-import { ScrapperHelper } from './ScrapperHelper'
+import { IProxyItem, ScrapperHelper } from './ScrapperHelper'
 
 interface IPost {
   title: string;
@@ -12,11 +12,12 @@ interface IPost {
 export class ScrapperEmpregosSaoPauloRegioes extends ScrapperHelper {
   private static _name = 'ScrapperEmpregosSaoPauloRegioes';
 
-  public static init = async () => {
+  public static init = async (proxyItem: IProxyItem) => {
     console.log(`🤖 Initializing ${ScrapperEmpregosSaoPauloRegioes._name} 🤖`);
 
     const html = await ScrapperHelper.crawlHtml(
-      'http://empregossaopauloeregioes.blogspot.com/'
+      'http://empregossaopauloeregioes.blogspot.com/',
+      proxyItem
     );
 
     const $ = cheerio.load(html);

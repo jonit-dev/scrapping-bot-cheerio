@@ -15,10 +15,38 @@ export class ScrapperHelper {
     return await readFile(path.join(__dirname, location), 'utf8');
   };
 
-  public static crawlHtml = async (url: string) => {
+  public static crawlHtml = async (
+    url: string,
+    proxyItem?: IProxyItem | null,
+    showProxyWarnings?: boolean
+  ) => {
+    let options = {};
+    let proxiedRequest;
+
     try {
-      const req = await rp(url);
-      return req;
+      if (proxyItem) {
+        console.log(`Using proxy IP ${proxyItem.ip} - PORT ${proxyItem.port}`);
+        proxiedRequest = rp.defaults({
+          proxy: `http://${proxyItem.ip}:${proxyItem.port}`,
+          strictSSL: false
+        });
+
+        // Check if proxy is really working
+        // console.log('TEST RESULTS');
+        // const test = await proxiedRequest('https://api.ipify.org?format=json');
+        // console.log(test);
+
+        const req = await proxiedRequest(url);
+
+        return req;
+      } else {
+        if (showProxyWarnings) {
+          console.log("🔥 WARNING - YOU'RE NOT USING A PROXY! 🔥");
+        }
+
+        const req = await rp(url);
+        return req;
+      }
     } catch (error) {
       console.error(error);
     }
@@ -27,7 +55,11 @@ export class ScrapperHelper {
   public static fetchProxylist = async () => {
     console.log('Fetching proxy list...');
 
-    const html = await ScrapperHelper.crawlHtml('https://sslproxies.org/');
+    const html = await ScrapperHelper.crawlHtml(
+      'https://sslproxies.org/',
+      null,
+      false
+    );
 
     const $ = cheerio.load(html);
 

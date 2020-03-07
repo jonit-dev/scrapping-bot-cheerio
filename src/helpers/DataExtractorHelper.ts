@@ -66,17 +66,6 @@ export class DataExtractorHelper {
 
     // This function will extract as much data as we can from a raw job post. Unfortunately, it's not able to fill all of the required IPost fields, so you should do some extra checks to do so (like infering the sector and jobRoles)
 
-
-
-
-
-
-
-
-
-
-
-
     let salary = null
     try {
       salary = (rawPost.match(/((R\$\s)\d+[\.|\,]?\d+)/g) || rawPost.match(/\d+[\.|\,]?\d+[.|,]?\d+\s(reais)/g))[0].replace(/[^0-9]/g, '');
@@ -118,7 +107,7 @@ export class DataExtractorHelper {
       email: DataExtractorHelper.tryExtractData(rawPost, /\S+@\S+\.\S+/g),
       monthlySalary: salary,
       yearlySalary: salary && salary * 12,
-      hourlySalary: salary && salary / 1920,
+      hourlySalary: salary && (salary * 12) / 1920,
       experienceRequired: isExperienceRequired,
       externalUrl: DataExtractorHelper.tryExtractData(rawPost, /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig),
       phone,

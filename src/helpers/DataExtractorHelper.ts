@@ -47,7 +47,7 @@ export class DataExtractorHelper {
 
   }
 
-  public static tryExtractData(rawPost, regex, replace?) {
+  public static tryExtractingData(rawPost, regex, replace?) {
     try {
 
       if (replace) {
@@ -103,17 +103,17 @@ export class DataExtractorHelper {
       category: DataExtractorHelper.readCategory(isTemporary, isCLT, isInternship),
       positionType: isPartTime ? PostPositionType.PartTime : PostPositionType.FullTime,
       benefits,
-      content: DataExtractorHelper.tryExtractData(rawPost, /((Descrição|Descricao|Atividades|Função|Funcao)\:?\n?)\s?(.+\n){1,100}/i, /(Descrição|Descricao|Atividades):\n?\s?/i),
-      email: DataExtractorHelper.tryExtractData(rawPost, /\S+@\S+\.\S+/g),
+      content: DataExtractorHelper.tryExtractingData(rawPost, /((Descrição|Descricao|Atividades|Função|Funcao)\:?\n?)\s?(.+\n){1,100}/i, /(Descrição|Descricao|Atividades):\n?\s?/i),
+      email: DataExtractorHelper.tryExtractingData(rawPost, /\S+@\S+\.\S+/g),
       monthlySalary: salary,
       yearlySalary: salary && salary * 12,
       hourlySalary: salary && (salary * 12) / 1920,
       experienceRequired: isExperienceRequired,
-      externalUrl: DataExtractorHelper.tryExtractData(rawPost, /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig),
+      externalUrl: DataExtractorHelper.tryExtractingData(rawPost, /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig),
       phone,
-      requisites: DataExtractorHelper.tryExtractData(rawPost, /(((Pre|Pré)?\-?(Requisitos|Essencial))\:?\n?)\s?(.+\n){1,100}/i, /((Pre|Pré)?\-?Requisitos|Essencial)\:?\n?\s?/i),
-      schedule: DataExtractorHelper.tryExtractData(rawPost, /((Horario|horário)\:?\n?)\s?(.+\n){1,100}/i, /(Horario|horário):\n?\s?/i),
-      companyName: DataExtractorHelper.tryExtractData(rawPost, /((Empresa):(\n)?)\s?.+(\n)?/ig, /(Empresa):\s?/)
+      requisites: DataExtractorHelper.tryExtractingData(rawPost, /(((Pre|Pré)?\-?(Requisitos|Essencial))\:?\n?)\s?(.+\n){1,100}/i, /((Pre|Pré)?\-?Requisitos|Essencial)\:?\n?\s?/i),
+      schedule: DataExtractorHelper.tryExtractingData(rawPost, /((Horario|horário)\:?\n?)\s?(.+\n){1,100}/i, /(Horario|horário):\n?\s?/i),
+      companyName: DataExtractorHelper.tryExtractingData(rawPost, /((Empresa):(\n)?)\s?.+(\n)?/ig, /(Empresa):\s?/)
     }
 
 

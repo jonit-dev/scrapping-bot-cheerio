@@ -47,6 +47,21 @@ export class DataExtractorHelper {
 
   }
 
+  public static tryExtractData(rawPost, regex, replace?) {
+    try {
+
+      if (replace) {
+        return rawPost.match(regex)[0].replace(replace, '').trim()
+      } else {
+        return rawPost.match(regex)[0]
+      }
+
+    }
+    catch (error) {
+      return null
+    }
+  }
+
   public static extractJobData(rawPost) {
 
     // This function will extract as much data as we can from a raw job post. Unfortunately, it's not able to fill all of the required IPost fields, so you should do some extra checks to do so (like infering the sector and jobRoles)
@@ -54,42 +69,13 @@ export class DataExtractorHelper {
 
 
 
-    let requisites = null
-    try {
-      requisites = rawPost.match(/(((Pre|Pré)?\-?(Requisitos|Essencial))\:?\n?)\s?(.+\n){1,100}/i)[0].replace(/((Pre|Pré)?\-?Requisitos|Essencial)\:?\n?\s?/i, '').trim()
-      // description = post.match(/(Atividades\:?\n?)(.+\n){1,100}/ig)[0]  
-    }
-    catch (error) {
-      requisites = null
-    }
 
 
-    let schedule = null
 
-    try {
-      schedule = rawPost.match(/((Horario|horário)\:?\n?)\s?(.+\n){1,100}/i)[0].replace(/(Horario|horário):\n?\s?/i, '').trim()
 
-    }
-    catch (error) {
-      schedule = null
-    }
 
-    let description = null
-    try {
-      description = rawPost.match(/((Descrição|Descricao|Atividades|Função|Funcao)\:?\n?)\s?(.+\n){1,100}/i)[0].replace(/(Descrição|Descricao|Atividades):\n?\s?/i, '').trim()
-      // description = post.match(/(Atividades\:?\n?)(.+\n){1,100}/ig)[0]  
-    }
-    catch (error) {
-      description = null
-    }
 
-    let companyName = null;
-    try {
-      companyName = rawPost.match(/((Empresa):(\n)?)\s?.+(\n)?/ig)[0].replace(/(Empresa):\s?/, '').trim()
-    }
-    catch (error) {
-      companyName = null
-    }
+
 
     let salary = null
     try {
@@ -99,13 +85,7 @@ export class DataExtractorHelper {
       salary = null
     }
 
-    let email = null
-    try {
-      email = rawPost.match(/\S+@\S+\.\S+/g)[0];
-    }
-    catch (error) {
-      email = null
-    }
+
 
     let phone = null
     try {
@@ -115,13 +95,6 @@ export class DataExtractorHelper {
       phone = null
     }
 
-    let externalUrl = null
-    try {
-      externalUrl = rawPost.match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig)[0]
-    }
-    catch (error) {
-      externalUrl = null
-    }
 
 
     const isPartTime = (/(meio período)/).test(rawPost)
@@ -141,17 +114,17 @@ export class DataExtractorHelper {
       category: DataExtractorHelper.readCategory(isTemporary, isCLT, isInternship),
       positionType: isPartTime ? PostPositionType.PartTime : PostPositionType.FullTime,
       benefits,
-      content: description,
-      email,
+      content: DataExtractorHelper.tryExtractData(rawPost, /((Descrição|Descricao|Atividades|Função|Funcao)\:?\n?)\s?(.+\n){1,100}/i, /(Descrição|Descricao|Atividades):\n?\s?/i),
+      email: DataExtractorHelper.tryExtractData(rawPost, /\S+@\S+\.\S+/g),
       monthlySalary: salary,
       yearlySalary: salary && salary * 12,
       hourlySalary: salary && salary / 1920,
       experienceRequired: isExperienceRequired,
-      externalUrl,
+      externalUrl: DataExtractorHelper.tryExtractData(rawPost, /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/ig),
       phone,
-      requisites,
-      schedule,
-      companyName
+      requisites: DataExtractorHelper.tryExtractData(rawPost, /(((Pre|Pré)?\-?(Requisitos|Essencial))\:?\n?)\s?(.+\n){1,100}/i, /((Pre|Pré)?\-?Requisitos|Essencial)\:?\n?\s?/i),
+      schedule: DataExtractorHelper.tryExtractData(rawPost, /((Horario|horário)\:?\n?)\s?(.+\n){1,100}/i, /(Horario|horário):\n?\s?/i),
+      companyName: DataExtractorHelper.tryExtractData(rawPost, /((Empresa):(\n)?)\s?.+(\n)?/ig, /(Empresa):\s?/)
     }
 
 
